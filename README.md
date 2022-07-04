@@ -15,4 +15,4 @@ In order to successfully connect to the two databases locally, two .env files ar
 
    PGDATABASE=<nc_news_test>
 
-The package.json includes all other files required to run thsi project.
+The package.json includes all other files required to run this project.
