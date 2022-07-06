@@ -39,21 +39,8 @@ describe("GET /api/topics", () => {
       });
   });
 });
-/*
 
-. GET /api/articles/:article_id
-Responds with:
-- an article object, which should have the following properties:
-  - `author` which is the `username` from the users table
-  - `title`
-  - `article_id`
-  - `body`
-  - `topic`
-  - `created_at`
-  - `votes`
-*/
-
-describe.only("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("status 200: responds with an object with all properties", () => {
     const article_id = 1;
     return request(app)
@@ -71,13 +58,22 @@ describe.only("GET /api/articles/:article_id", () => {
         });
       });
   });
-  test.only("status 404: route does not exist", () => {
+  test("status 404: route does not exist and responds with 'Article not found'", () => {
     const article_id = 20;
     return request(app)
       .get(`/api/articles/${article_id}`)
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("Article not found");
+      });
+  });
+  test("status 400: incorrect syntax/format, responds with 'Bad request", () => {
+    const article_id = "bananas";
+    return request(app)
+      .get(`/api/articles/${article_id}`)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
       });
   });
 });

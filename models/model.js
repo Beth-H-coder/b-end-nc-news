@@ -13,3 +13,16 @@ exports.selectArticleById = (article_Id) => {
       return article.rows[0];
     });
 };
+
+exports.updateArticleById = (totalVotes, article_Id) => {
+  console.log(`model ${totalVotes}`);
+  return db
+    .query(`UPDATE articles SET votes = $1 WHERE article_id = $2 RETURNING *`, [
+      totalVotes,
+      article_Id,
+    ])
+    .then((result) => {
+      console.log(result);
+      //return result.rows[0];
+    });
+};
