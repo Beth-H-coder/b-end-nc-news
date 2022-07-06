@@ -77,3 +77,50 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("status 200: updates specified article with specified number of votes", () => {
+    const article_id = 1;
+    const newVotes = 10;
+    const articleUpdate = { inc_votes: newVotes };
+    return request(app)
+      .patch(`/api/articles/${article_id}`)
+      .send(articleUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 110,
+        });
+      });
+  });
+  test("status 404: article does not exist and responds with 'Article not found'. ", () => {
+    const article_id = 50;
+    const newVotes = 10;
+    const articleUpdate = { inc_votes: newVotes };
+    return request(app)
+      .patch(`/api/articles/${article_id}`)
+      .send(articleUpdate)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Article not found");
+      });
+  });
+  test("status 400: inc_votes type invalid and responds with 'Bad request'", () => {
+    const article_id = 1;
+    const newVotes = "bananas";
+    const articleUpdate = { inc_votes: newVotes };
+    return request(app)
+      .patch(`/api/articles/${article_id}`)
+      .send(articleUpdate)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+});

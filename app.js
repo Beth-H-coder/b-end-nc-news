@@ -5,7 +5,7 @@ app.use(express.json());
 const {
   getTopics,
   getArticleById,
-
+  patchArticleById,
 } = require("./controllers/controllers");
 const {
   handleInvalidPaths,
@@ -15,6 +15,8 @@ const {
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
+
+app.patch("/api/articles/:article_id", patchArticleById);
 
 app.use("*", handleInvalidPaths);
 app.use(handlePsqlErrors);

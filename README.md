@@ -7,7 +7,7 @@ In order to successfully connect to the two databases locally, two .env files ar
    1. .env.development
    2. .env.test.
 
-2. Add the following to the .env.development file:
+2. Add the following to the .env.development fgile:
 
    PGDATABASE=<nc_news>
 
