@@ -77,7 +77,7 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
-
+//PATCH "PATCH /api/articles/:article_id"
 describe("PATCH /api/articles/:article_id", () => {
   test("status 200: updates specified article with specified number of votes", () => {
     const article_id = 1;
