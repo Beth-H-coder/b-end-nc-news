@@ -2,7 +2,7 @@ const {
   selectTopics,
   selectArticleById,
   updateArticleById,
-} = require("../models/models");
+} = require("../models/model");
 
 exports.getTopics = (req, res, next) => {
   selectTopics()
@@ -32,6 +32,7 @@ exports.getArticleById = (req, res, next) => {
 exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
+
   selectArticleById(article_id)
     .then((article) => {
       if (article) {
@@ -43,8 +44,8 @@ exports.patchArticleById = (req, res, next) => {
     .catch((err) => {
       next(err);
     })
-    .then((votes) => {
-      let totalVotes = votes + inc_votes;
+    .then((currentVotes) => {
+      let totalVotes = currentVotes + inc_votes;
       updateArticleById(totalVotes, article_id)
         .then((updatedArticle) => {
           res.status(200).send({ article: updatedArticle });

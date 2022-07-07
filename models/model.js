@@ -24,4 +24,3 @@ exports.updateArticleById = (totalVotes, article_Id) => {
       return result.rows[0];
     });
 };
-
