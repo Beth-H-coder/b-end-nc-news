@@ -15,7 +15,6 @@ exports.selectArticleById = (article_Id) => {
 };
 
 exports.updateArticleById = (totalVotes, article_Id) => {
-  console.log(totalVotes);
   return db
     .query(`UPDATE articles SET votes = $1 WHERE article_id = $2 RETURNING *`, [
       totalVotes,
