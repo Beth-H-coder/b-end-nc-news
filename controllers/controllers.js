@@ -2,6 +2,8 @@ const {
   selectTopics,
   selectArticleById,
   updateArticleById,
+  selectUsers,
+  //selectArticles,
 } = require("../models/models");
 
 exports.getTopics = (req, res, next) => {
@@ -31,27 +33,34 @@ exports.getArticleById = (req, res, next) => {
 
 exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  const { inc_votes } = req.body;
+  const newVotes = req.body.inc_votes; //|| 0;
+  updateArticleById(newVotes, article_id)
+    .then((article) => res.status(200).send({ article }))
+    .catch(next);
+};
 
-  selectArticleById(article_id)
-    .then((article) => {
-      if (article) {
-        return article.votes;
-      } else {
-        return res.status(404).send({ msg: "Article not found" });
-      }
+exports.getUsers = (req, res, next) => {
+  selectUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch((err) => {
       next(err);
-    })
-    .then((currentVotes) => {
-      let totalVotes = currentVotes + inc_votes;
-      updateArticleById(totalVotes, article_id)
-        .then((updatedArticle) => {
-          res.status(200).send({ article: updatedArticle });
-        })
-        .catch((err) => {
-          next(err);
-        });
     });
 };
+
+// exports.getArticles = (req, res, next) => {
+//   console.log(req);
+//   const { sort_by } = req.query;
+//   const { order_by } = req.query;
+//   console.log(sort_by);
+//   console.log(order_by);
+//   selectArticles()
+//     .then((articles) => {
+//       console.log(articles);
+//       res.status(200).send({ articles });
+//     })
+//     .catch((err) => {
+//       next(err);
+//     });
+// };
