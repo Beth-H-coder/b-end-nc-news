@@ -34,8 +34,9 @@ describe("GET /api/topics", () => {
     return request(app)
       .get("/api/invalidpath")
       .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe("invalid path");
+      .then(({ body: { msg } }) => {
+        //console.log(response);
+        expect(msg).toBe("Invalid path");
       });
   });
 });
@@ -184,7 +185,79 @@ describe("PATCH /api/articles/:article_id", () => {
       .send(articleUpdate)
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
+        expect(body.msg).toBe("Invalid data type");
       });
   });
 });
+
+describe("GET /api/users", () => {
+  test("status 200: responds with an array of user objects with properties of username, name and avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test("status 404: route does not exist", () => {
+    return request(app)
+      .get("/api/invalidpath")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid path");
+      });
+  });
+});
+/*
+7. GET /api/articles/:article_id (comment count)
+An article response object should also now include:
+
+-comment_count which is the total count of all the comments with this article_id - you should make use of queries to the database in order to achieve this.
+come back - simlar to above 
+
+describe("GET /api/articles/:article_id", () => {
+  test(" ", () => {});
+});
+
+
+*/
+//8  GET /api/articles
+
+// describe("GET /api/articles", () => {
+//   test.only("status 200: responds with an array of article objects with all properties and an additional 'count' property", () => {
+//     return request(app)
+//       .get("/api/articles")
+//       .expect(200)
+//       .then(({ body }) => {
+//         4;
+//         const { articles } = body;
+//         expect(articles).toBeInstanceOf(Array);
+//         expect(articles).toHaveLength(12);
+//         articles.forEach((article) => {
+//           expect(article).toEqual(
+//             expect.objectContaining({
+//               author: expect.any(String),
+//               title: expect.any(String),
+//               article_id: expect.any(Number),
+//               topic: expect.any(String),
+//               created_at: expect.any(String),
+//               votes: expect.any(Number),
+//               comment_count: expect.any(Number),
+//               body: expect.any(String),
+//             })
+//           );
+//         });
+//       });
+//   });
+// });
