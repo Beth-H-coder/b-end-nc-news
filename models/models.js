@@ -55,6 +55,8 @@ exports.fetchArticles = () => {
   ORDER BY articles.created_at DESC;`;
 
   return db.query(articleIdQuery).then((result) => {
+    console.log(result.rows);
+
     return result.rows;
   });
 };

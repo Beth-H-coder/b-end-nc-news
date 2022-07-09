@@ -231,10 +231,9 @@ describe("GET /api/articles/:article_id", () => {
 
 
 */
-//8  GET /api/articles
 
 describe("GET /api/articles", () => {
-  test("status 200: responds with an array of article objects with all properties and an additional 'count' property", () => {
+  test("status 200: responds with an array of article objects with all properties, including an additional 'count' property", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -258,40 +257,53 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test.only("status 200: responds with an array of article objects with all properties and an additional 'count' property", () => {
+  test('status 200: responds with an array of objects that are sorted by date in descending order', () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-          expect(article[0]).toEqual(
+        let timeDifference = articles.map(article => {
+            let myDate = new Date(article.created_at);
+            let created_at_in_ms = myDate.getTime();
+            let difference = Date.now() - created_at_in_ms; 
+            return difference;
+        })
+        let orderIsDesc = timeDifference.slice(1)
+        .every((ms_time, i) => {
+            return ms_time >= timeDifference[i]; 
+        })
+        expect(orderIsDesc).toBe(true);
+    })
+})
+  test("status 200: responds with a comment_count property that totals all comments for each article_id and has a total of zero for those articles without comments ", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+          expect(articles[5]).toEqual(
             expect.objectContaining({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              comment_count: expect.any(String),
-              body: expect.any(String),
+              article_id: 1,
+              title: 'Living in the shadow of a great man',
+              topic: 'mitch',
+              author: 'butter_bridge',
+              body: 'I find this existence challenging',
+              created_at: '2020-07-09T20:11:00.000Z',
+              votes: 100,
+              comment_count: '11'
             })
           );
-        });
+        })
       });
-  });
-//});
+  test("status 404: route does not exist", () => {
+        return request(app)
+          .get("/api/invalidpath")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            //console.log(response);
+            expect(msg).toBe("Invalid path");
+          });
+      });
+    });
 
-// const PARK_ID = 2;
-//     return request(app)
-//       .get(`/api/parks/${PARK_ID}`)
-//       .expect(200)
-//       .then(({ body }) => {
-//         expect(body.park).toEqual({
-//           park_id: PARK_ID,
-//           park_name: "Alton Towers",
-//           year_opened: 1980,
-//           annual_attendance: 2520000,
-//         });
-//       });
-//   });
-// });
