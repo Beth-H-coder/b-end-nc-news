@@ -4,12 +4,11 @@ const db = require("../db/connection.js");
 
 const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data/index");
+beforeEach(() => seed(testData));
 
 afterAll(() => {
   if (db.end) db.end();
 });
-
-beforeEach(() => seed(testData));
 
 describe("GET /api/topics", () => {
   test("status 200: responds with an array of topic objects", () => {
@@ -234,29 +233,64 @@ describe("GET /api/articles/:article_id", () => {
 */
 //8  GET /api/articles
 
-// describe("GET /api/articles", () => {
-//   test.only("status 200: responds with an array of article objects with all properties and an additional 'count' property", () => {
+describe("GET /api/articles", () => {
+  test("status 200: responds with an array of article objects with all properties and an additional 'count' property", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12);
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
+              body: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test.only("status 200: responds with an array of article objects with all properties and an additional 'count' property", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+          expect(article[0]).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
+              body: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+//});
+
+// const PARK_ID = 2;
 //     return request(app)
-//       .get("/api/articles")
+//       .get(`/api/parks/${PARK_ID}`)
 //       .expect(200)
 //       .then(({ body }) => {
-//         4;
-//         const { articles } = body;
-//         expect(articles).toBeInstanceOf(Array);
-//         expect(articles).toHaveLength(12);
-//         articles.forEach((article) => {
-//           expect(article).toEqual(
-//             expect.objectContaining({
-//               author: expect.any(String),
-//               title: expect.any(String),
-//               article_id: expect.any(Number),
-//               topic: expect.any(String),
-//               created_at: expect.any(String),
-//               votes: expect.any(Number),
-//               comment_count: expect.any(Number),
-//               body: expect.any(String),
-//             })
-//           );
+//         expect(body.park).toEqual({
+//           park_id: PARK_ID,
+//           park_name: "Alton Towers",
+//           year_opened: 1980,
+//           annual_attendance: 2520000,
 //         });
 //       });
 //   });

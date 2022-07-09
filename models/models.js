@@ -47,22 +47,14 @@ exports.selectUsers = () => {
   });
 };
 
-// exports.selectArticles = (sort_by = "created_at") => {
+exports.fetchArticles = () => {
+  let articleIdQuery = `SELECT articles.*, COUNT(comment_id) AS comment_count
+  FROM articles
+  LEFT JOIN comments on comments.article_id = articles.article_id
+  GROUP BY articles.article_id
+  ORDER BY articles.created_at DESC;`;
 
-//    let articleIdQuery = `SELECT * articles.
-//   // COUNT (comments.article_id) AS comment_count
-//   // FROM comments
-//   // INNER JOIN articles on comments.article_id = articles.article_id`;
-//   if (!sort_by) {
-//     sort_by = "created_at";
-//   }
-//   if (!order_by) {
-//     order_by = "ASC";
-//   }
-//   articleIdQuery += `GROUP BY articles.article_id
-// ORDER BY articles.${sort_by} ${order_by}`;
-//   return db.query(articleIdQuery).then((result) => {
-//     console.log(result);
-//     return result.rows;
-//});
-//};
+  return db.query(articleIdQuery).then((result) => {
+    return result.rows;
+  });
+};

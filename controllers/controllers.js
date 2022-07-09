@@ -3,7 +3,7 @@ const {
   selectArticleById,
   updateArticleById,
   selectUsers,
-  //selectArticles,
+  fetchArticles,
 } = require("../models/models");
 
 exports.getTopics = (req, res, next) => {
@@ -49,18 +49,14 @@ exports.getUsers = (req, res, next) => {
     });
 };
 
-// exports.getArticles = (req, res, next) => {
-//   console.log(req);
-//   const { sort_by } = req.query;
-//   const { order_by } = req.query;
-//   console.log(sort_by);
-//   console.log(order_by);
-//   selectArticles()
-//     .then((articles) => {
-//       console.log(articles);
-//       res.status(200).send({ articles });
-//     })
-//     .catch((err) => {
-//       next(err);
-//     });
-// };
+exports.getArticles = (req, res, next) => {
+  const { topic, sort_by, order } = req.query;
+
+  fetchArticles(topic, sort_by, order)
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
