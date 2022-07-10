@@ -47,6 +47,11 @@ exports.selectUsers = () => {
   });
 };
 
+exports.fetchArticleByIdWithComms = (article_id) => {
+  console.log(article_id);
+  console.log("in model now");
+};
+
 exports.fetchArticles = () => {
   let articleIdQuery = `SELECT articles.*, COUNT(comment_id) AS comment_count
   FROM articles
@@ -55,8 +60,21 @@ exports.fetchArticles = () => {
   ORDER BY articles.created_at DESC;`;
 
   return db.query(articleIdQuery).then((result) => {
-    console.log(result.rows);
-
     return result.rows;
+  });
+};
+
+exports.fetchComments = (article_id) => {
+  let queryStr = `SELECT * FROM comments WHERE article_id = $1;`;
+  return db.query(queryStr, [article_id]).then((results) => {
+    const commentsByArticleID = results.rows;
+
+    if (commentsByArticleID.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: "No comments exist for the requested ID",
+      });
+    }
+    return commentsByArticleID;
   });
 };
